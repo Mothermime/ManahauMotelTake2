@@ -1,0 +1,402 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="ManahauMotelModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Billing">
+          <Key>
+            <PropertyRef Name="BillingID" />
+          </Key>
+          <Property Name="BillingID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BarCharge" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="WiFiCharge" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="TelephoneCharge" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="RoomCharge" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="BookingIDFK" Type="int" />
+        </EntityType>
+        <EntityType Name="Booking">
+          <Key>
+            <PropertyRef Name="BookingID" />
+          </Key>
+          <Property Name="BookingID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BookingFrom" Type="date" />
+          <Property Name="BookingTo" Type="date" />
+          <Property Name="CheckIn" Type="datetime" />
+          <Property Name="CheckOut" Type="datetime" />
+          <Property Name="GuestIDFK" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Guests">
+          <Key>
+            <PropertyRef Name="GuestID" />
+          </Key>
+          <Property Name="GuestID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="Address" Type="nvarchar" MaxLength="50" />
+          <Property Name="Phone" Type="nchar" MaxLength="10" />
+          <Property Name="No.ofGuests" Type="int" Nullable="false" />
+          <Property Name="Notes" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Join">
+          <Key>
+            <PropertyRef Name="JoinID" />
+          </Key>
+          <Property Name="JoinID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoomIDFK" Type="int" Nullable="false" />
+          <Property Name="BookingIDFK" Type="int" Nullable="false" />
+          <Property Name="BillingIDFK" Type="int" />
+        </EntityType>
+        <EntityType Name="Rooms">
+          <Key>
+            <PropertyRef Name="RoomID" />
+          </Key>
+          <Property Name="RoomID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Room Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="RoomType" Type="nvarchar" MaxLength="50" />
+          <Property Name="Double Beds" Type="int" />
+          <Property Name="Single Beds" Type="int" />
+          <Property Name="TariffSingle" Type="money" />
+          <Property Name="TariffCouple" Type="smallmoney" />
+          <Property Name="TariffExtraPeople" Type="smallmoney" />
+          <Property Name="ExtraBeds" Type="int" />
+          <Property Name="Overflow" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <Association Name="FK_Booking_Guests">
+          <End Role="Guests" Type="Self.Guests" Multiplicity="1" />
+          <End Role="Booking" Type="Self.Booking" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Guests">
+              <PropertyRef Name="GuestID" />
+            </Principal>
+            <Dependent Role="Booking">
+              <PropertyRef Name="GuestIDFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Join_Billing">
+          <End Role="Billing" Type="Self.Billing" Multiplicity="0..1" />
+          <End Role="Join" Type="Self.Join" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Billing">
+              <PropertyRef Name="BillingID" />
+            </Principal>
+            <Dependent Role="Join">
+              <PropertyRef Name="BillingIDFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Join_Booking">
+          <End Role="Booking" Type="Self.Booking" Multiplicity="1" />
+          <End Role="Join" Type="Self.Join" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Booking">
+              <PropertyRef Name="BookingID" />
+            </Principal>
+            <Dependent Role="Join">
+              <PropertyRef Name="BookingIDFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Join_Rooms">
+          <End Role="Rooms" Type="Self.Rooms" Multiplicity="1" />
+          <End Role="Join" Type="Self.Join" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rooms">
+              <PropertyRef Name="RoomID" />
+            </Principal>
+            <Dependent Role="Join">
+              <PropertyRef Name="RoomIDFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ManahauMotelModelStoreContainer">
+          <EntitySet Name="Billing" EntityType="Self.Billing" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Booking" EntityType="Self.Booking" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Guests" EntityType="Self.Guests" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Join" EntityType="Self.Join" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Rooms" EntityType="Self.Rooms" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Booking_Guests" Association="Self.FK_Booking_Guests">
+            <End Role="Guests" EntitySet="Guests" />
+            <End Role="Booking" EntitySet="Booking" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Join_Billing" Association="Self.FK_Join_Billing">
+            <End Role="Billing" EntitySet="Billing" />
+            <End Role="Join" EntitySet="Join" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Join_Booking" Association="Self.FK_Join_Booking">
+            <End Role="Booking" EntitySet="Booking" />
+            <End Role="Join" EntitySet="Join" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Join_Rooms" Association="Self.FK_Join_Rooms">
+            <End Role="Rooms" EntitySet="Rooms" />
+            <End Role="Join" EntitySet="Join" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ManahauMotelModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="ManahauMotelEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Billings" EntityType="ManahauMotelModel.Billing" />
+          <EntitySet Name="Bookings" EntityType="ManahauMotelModel.Booking" />
+          <EntitySet Name="Rooms" EntityType="ManahauMotelModel.Room" />
+          <EntitySet Name="Guests" EntityType="ManahauMotelModel.Guest" />
+          <EntitySet Name="sysdiagrams" EntityType="ManahauMotelModel.sysdiagram" />
+          <AssociationSet Name="FK_Booking_Guests" Association="ManahauMotelModel.FK_Booking_Guests">
+            <End Role="Guest" EntitySet="Guests" />
+            <End Role="Booking" EntitySet="Bookings" />
+          </AssociationSet>
+          <EntitySet Name="Joins" EntityType="ManahauMotelModel.Join" />
+          <AssociationSet Name="FK_Join_Booking" Association="ManahauMotelModel.FK_Join_Booking">
+            <End Role="Booking" EntitySet="Bookings" />
+            <End Role="Join" EntitySet="Joins" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Join_Rooms" Association="ManahauMotelModel.FK_Join_Rooms">
+            <End Role="Room" EntitySet="Rooms" />
+            <End Role="Join" EntitySet="Joins" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Join_Billing" Association="ManahauMotelModel.FK_Join_Billing">
+            <End Role="Billing" EntitySet="Billings" />
+            <End Role="Join" EntitySet="Joins" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Billing">
+          <Key>
+            <PropertyRef Name="BillingID" />
+          </Key>
+          <Property Name="BillingID" Type="Int32" Nullable="false" />
+          <Property Name="BarCharge" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="WiFiCharge" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="TelephoneCharge" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="RoomCharge" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="BookingIDFK" Type="Int32" />
+          <NavigationProperty Name="Joins" Relationship="ManahauMotelModel.FK_Join_Billing" FromRole="Billing" ToRole="Join" />
+        </EntityType>
+        <EntityType Name="Booking">
+          <Key>
+            <PropertyRef Name="BookingID" />
+          </Key>
+          <Property Name="BookingID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BookingFrom" Type="DateTime" Precision="0" />
+          <Property Name="BookingTo" Type="DateTime" Precision="0" />
+          <Property Name="CheckIn" Type="DateTime" Precision="3" />
+          <Property Name="CheckOut" Type="DateTime" Precision="3" />
+          <Property Name="GuestIDFK" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Guest" Relationship="ManahauMotelModel.FK_Booking_Guests" FromRole="Booking" ToRole="Guest" />
+          <NavigationProperty Name="Joins" Relationship="ManahauMotelModel.FK_Join_Booking" FromRole="Booking" ToRole="Join" />
+        </EntityType>
+        <EntityType Name="Room">
+          <Key>
+            <PropertyRef Name="RoomID" />
+          </Key>
+          <Property Name="RoomID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Room_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RoomType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Double_Beds" Type="Int32" />
+          <Property Name="Single_Beds" Type="Int32" />
+          <Property Name="TariffSingle" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="TariffCouple" Type="Decimal" Precision="10" Scale="4" />
+          <Property Name="TariffExtraPeople" Type="Decimal" Precision="10" Scale="4" />
+          <Property Name="ExtraBeds" Type="Int32" />
+          <Property Name="Overflow" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Joins" Relationship="ManahauMotelModel.FK_Join_Rooms" FromRole="Room" ToRole="Join" />
+        </EntityType>
+        <EntityType Name="Guest">
+          <Key>
+            <PropertyRef Name="GuestID" />
+          </Key>
+          <Property Name="GuestID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="No_ofGuests" Type="Int32" Nullable="false" />
+          <Property Name="Notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Bookings" Relationship="ManahauMotelModel.FK_Booking_Guests" FromRole="Guest" ToRole="Booking" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <Association Name="FK_Booking_Guests">
+          <End Type="ManahauMotelModel.Guest" Role="Guest" Multiplicity="1" />
+          <End Type="ManahauMotelModel.Booking" Role="Booking" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Guest">
+              <PropertyRef Name="GuestID" />
+            </Principal>
+            <Dependent Role="Booking">
+              <PropertyRef Name="GuestIDFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Join">
+          <Key>
+            <PropertyRef Name="JoinID" />
+          </Key>
+          <Property Name="JoinID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoomIDFK" Type="Int32" Nullable="false" />
+          <Property Name="BookingIDFK" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Booking" Relationship="ManahauMotelModel.FK_Join_Booking" FromRole="Join" ToRole="Booking" />
+          <NavigationProperty Name="Room" Relationship="ManahauMotelModel.FK_Join_Rooms" FromRole="Join" ToRole="Room" />
+          <Property Name="BillingIDFK" Type="Int32" />
+          <NavigationProperty Name="Billing" Relationship="ManahauMotelModel.FK_Join_Billing" FromRole="Join" ToRole="Billing" />
+        </EntityType>
+        <Association Name="FK_Join_Booking">
+          <End Type="ManahauMotelModel.Booking" Role="Booking" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ManahauMotelModel.Join" Role="Join" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Booking">
+              <PropertyRef Name="BookingID" />
+            </Principal>
+            <Dependent Role="Join">
+              <PropertyRef Name="BookingIDFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Join_Rooms">
+          <End Type="ManahauMotelModel.Room" Role="Room" Multiplicity="1" />
+          <End Type="ManahauMotelModel.Join" Role="Join" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Room">
+              <PropertyRef Name="RoomID" />
+            </Principal>
+            <Dependent Role="Join">
+              <PropertyRef Name="RoomIDFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Join_Billing">
+          <End Type="ManahauMotelModel.Billing" Role="Billing" Multiplicity="0..1" />
+          <End Type="ManahauMotelModel.Join" Role="Join" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Billing">
+              <PropertyRef Name="BillingID" />
+            </Principal>
+            <Dependent Role="Join">
+              <PropertyRef Name="BillingIDFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ManahauMotelModelStoreContainer" CdmEntityContainer="ManahauMotelEntities">
+          <EntitySetMapping Name="Billings">
+            <EntityTypeMapping TypeName="ManahauMotelModel.Billing">
+              <MappingFragment StoreEntitySet="Billing">
+                <ScalarProperty Name="BookingIDFK" ColumnName="BookingIDFK" />
+                <ScalarProperty Name="RoomCharge" ColumnName="RoomCharge" />
+                <ScalarProperty Name="TelephoneCharge" ColumnName="TelephoneCharge" />
+                <ScalarProperty Name="WiFiCharge" ColumnName="WiFiCharge" />
+                <ScalarProperty Name="BarCharge" ColumnName="BarCharge" />
+                <ScalarProperty Name="BillingID" ColumnName="BillingID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Bookings">
+            <EntityTypeMapping TypeName="ManahauMotelModel.Booking">
+              <MappingFragment StoreEntitySet="Booking">
+                <ScalarProperty Name="GuestIDFK" ColumnName="GuestIDFK" />
+                <ScalarProperty Name="CheckOut" ColumnName="CheckOut" />
+                <ScalarProperty Name="CheckIn" ColumnName="CheckIn" />
+                <ScalarProperty Name="BookingTo" ColumnName="BookingTo" />
+                <ScalarProperty Name="BookingFrom" ColumnName="BookingFrom" />
+                <ScalarProperty Name="BookingID" ColumnName="BookingID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Rooms">
+            <EntityTypeMapping TypeName="ManahauMotelModel.Room">
+              <MappingFragment StoreEntitySet="Rooms">
+                <ScalarProperty Name="Overflow" ColumnName="Overflow" />
+                <ScalarProperty Name="ExtraBeds" ColumnName="ExtraBeds" />
+                <ScalarProperty Name="TariffExtraPeople" ColumnName="TariffExtraPeople" />
+                <ScalarProperty Name="TariffCouple" ColumnName="TariffCouple" />
+                <ScalarProperty Name="TariffSingle" ColumnName="TariffSingle" />
+                <ScalarProperty Name="Single_Beds" ColumnName="Single Beds" />
+                <ScalarProperty Name="Double_Beds" ColumnName="Double Beds" />
+                <ScalarProperty Name="RoomType" ColumnName="RoomType" />
+                <ScalarProperty Name="Room_Name" ColumnName="Room Name" />
+                <ScalarProperty Name="RoomID" ColumnName="RoomID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Guests">
+            <EntityTypeMapping TypeName="ManahauMotelModel.Guest">
+              <MappingFragment StoreEntitySet="Guests">
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="No_ofGuests" ColumnName="No.ofGuests" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="GuestID" ColumnName="GuestID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="ManahauMotelModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Joins">
+            <EntityTypeMapping TypeName="ManahauMotelModel.Join">
+              <MappingFragment StoreEntitySet="Join">
+                <ScalarProperty Name="BillingIDFK" ColumnName="BillingIDFK" />
+                <ScalarProperty Name="BookingIDFK" ColumnName="BookingIDFK" />
+                <ScalarProperty Name="RoomIDFK" ColumnName="RoomIDFK" />
+                <ScalarProperty Name="JoinID" ColumnName="JoinID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
